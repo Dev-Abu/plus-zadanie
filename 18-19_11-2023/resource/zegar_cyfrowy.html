@@ -1,0 +1,300 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	
+<style>
+#zegar1{
+	font-family: "EFN KK 3z9 HR"; 
+}
+</style>
+	
+<script>
+
+	function losuj()
+	{
+		return Math.floor(Math.random()*255).toString(16);
+	}
+	
+	function kolor()
+	{
+		return "green";
+		return '#'+losuj()+losuj()+losuj();
+	}
+
+	function wyswietl_cyfre(parentCnt,cyfra)
+	{
+		const canvas = parentCnt.querySelector("canvas");
+		ctx = canvas.getContext('2d');
+		s = canvas.width;
+		w = canvas.height;
+		ctx.clearRect(0,0,s,w);
+		ctx.strokeStyle = kolor();
+		ctx.fillStyle = kolor();
+		switch(cyfra)
+		{
+			case 9:	ctx.fillRect(6,13,8,4);				
+					ctx.fillRect(6,25,8,4);				
+					ctx.fillRect(1,w-29,4,13);			
+			case 7: ctx.fillRect(6,1,8,4);			
+			case 1: ctx.fillRect(s-5,w-29,4,13);
+					ctx.fillRect(s-5,w-15,4,13);
+					break;
+			case 2: ctx.fillRect(s-5,w-29,4,13);
+					ctx.fillRect(1,w-15,4,13);
+					ctx.fillRect(6,13,8,4);
+					ctx.fillRect(6,1,8,4);
+					ctx.fillRect(6,25,8,4);
+					break;
+			case 3: ctx.fillRect(s-5,w-29,4,13); 
+					ctx.fillRect(s-5,w-15,4,13);
+					ctx.fillRect(6,13,8,4);
+					ctx.fillRect(6,1,8,4);
+					ctx.fillRect(6,25,8,4);
+					break;	
+			case 4: ctx.fillRect(s-5,w-29,4,13); 		
+					ctx.fillRect(s-5,w-15,4,13);		
+					ctx.fillRect(6,13,8,4);				
+					ctx.fillRect(1,w-29,4,13);		
+					break;		
+			case 6: ctx.fillRect(1,w-15,4,13);	
+			case 5: ctx.fillRect(s-5,w-15,4,13);		
+					ctx.fillRect(6,13,8,4);				
+					ctx.fillRect(6,1,8,4);				
+					ctx.fillRect(6,25,8,4);			
+					ctx.fillRect(1,w-29,4,13);			
+					break;						
+			case 8: ctx.fillRect(6,13,8,4);						
+			case 0: ctx.fillRect(s-5,w-29,4,13); 		
+					ctx.fillRect(s-5,w-15,4,13);			
+					ctx.fillRect(6,1,8,4);				
+					ctx.fillRect(6,25,8,4);				
+					ctx.fillRect(1,w-29,4,13);			
+					ctx.fillRect(1,w-15,4,13);			
+					break;							
+			default:ctx.strokeStyle = "red";
+					ctx.fillStyle = "red";
+					ctx.fillRect(2,w-22,4,4);
+					ctx.fillRect(2,w-12,4,4);
+		}
+		return;
+	}
+
+	function formatuj(n)
+	{
+		return (n<10 ? "0"+n : n);	
+	}
+
+	function zegar()
+	{
+		data = new Date();
+		godzina = data.getHours();
+		minuta = data.getMinutes();
+		sekunda = data.getSeconds();
+	
+		document.querySelector("#zegar").innerHTML = "Aktualny czas: "+formatuj(godzina)+":"+formatuj(minuta)+":"+formatuj(sekunda);
+		
+		document.querySelector("#zegar1").innerHTML = "Aktualny czas: "+formatuj(godzina)+":"+formatuj(minuta)+":"+formatuj(sekunda);
+	}
+	
+	function cyfrowy()
+	{
+		data = new Date();
+		godzina = data.getHours();
+		minuta = data.getMinutes();
+		sekunda = data.getSeconds();
+
+		wyswietl_cyfre(document.getElementById('godzina1'),Math.floor(godzina/10));
+		wyswietl_cyfre(document.getElementById('godzina2'),godzina-10*Math.floor(godzina/10));
+		
+		wyswietl_cyfre(document.getElementById('minuta1'),Math.floor(minuta/10));
+		wyswietl_cyfre(document.getElementById('minuta2'),minuta-10*Math.floor(minuta/10));
+		
+		wyswietl_cyfre(document.getElementById('sekunda1'),Math.floor(sekunda/10));
+		wyswietl_cyfre(document.getElementById('sekunda2'),sekunda-10*Math.floor(sekunda/10));
+		
+		wyswietl_cyfre(document.getElementById('kropki1'),-1);
+		wyswietl_cyfre(document.getElementById('kropki2'),-1);	
+	}
+	
+	function H24H12(czas)
+	{
+		return (czas>12 ? czas-12 : czas);
+	}
+	
+	
+	function analogowy()
+	{
+		data = new Date();
+		godzina = data.getHours();
+		minuta = data.getMinutes();
+		sekunda = data.getSeconds();
+		parentCnt = document.querySelector("#analogowy");
+		const canvas = parentCnt.querySelector("canvas");
+		ctx = canvas.getContext('2d');
+		
+		s = canvas.width;
+		s_2 = s/2;
+		w = canvas.height;
+		w_2 = w/2;
+		ctx.clearRect(0,0,s,w);
+		ctx.strokeStyle = "black";
+		ctx.fillStyle = "black";
+		ctx.beginPath();
+		ctx.arc(s_2,w_2,49,0,Math.PI*2);
+		ctx.fill();
+		
+		ctx.strokeStyle = "yellow";
+		ctx.fillStyle = "yellow";
+		ctx.beginPath();
+		ctx.arc(s_2,w_2,47,0,Math.PI*2);
+		ctx.fill();
+		
+		ctx.translate(s_2,w_2);
+		
+		ctx.strokeStyle = "black";
+		ctx.fillStyle = "black";
+		if(godzina>12)
+			inc_godzina = 12;
+		else
+			inc_godzina =0;
+			
+		for(i=0;i<60;i++)
+		{
+			kat = i/30*Math.PI;
+			ctx.rotate(kat);
+			ctx.beginPath();
+			ctx.moveTo(s_2-2,0);
+			ctx.lineTo(s_2-5,0);
+			ctx.stroke();
+			ctx.closePath();	
+			ctx.rotate(-kat);
+		}
+		
+		for(j=0;j<12;j++)
+		{
+			kat = j/6*Math.PI;
+			ctx.strokeStyle = "red";
+			ctx.fillStyle = "red";
+			ctx.rotate(kat);
+			ctx.beginPath();
+			ctx.moveTo(s_2-2,0);
+			ctx.lineTo(s_2-8,0);
+			ctx.stroke();
+			ctx.closePath();		
+			ctx.rotate(-kat);
+			ctx.strokeStyle = "blue";
+			ctx.fillStyle = "blue";
+			promien = 35;
+			x = -5+promien*Math.cos(kat);
+			y = 4+promien*Math.sin(kat);
+			ctx.fillText((j+2)%12+1+inc_godzina, x, y);
+		}
+		
+		kat_sekunda = sekunda/30*Math.PI;
+		kat_minuty = (minuta*60+sekunda)/(60*30)*Math.PI;
+		kat_godziny = ((H24H12(godzina)*60+minuta)*60+sekunda)/((12*60)*30+30)*Math.PI;
+		// wsk. godzinowa
+		ctx.rotate(kat_godziny);
+		ctx.strokeStyle = "blue";
+		ctx.fillStyle = "blue";
+		ctx.fillRect(-3,5,6,-36);
+		ctx.beginPath();
+		ctx.arc(0,-36,4,0,Math.PI*2);
+		ctx.fill();
+		ctx.rotate(-kat_godziny);
+		// wsk. minutowa
+		ctx.rotate(kat_minuty);
+		ctx.strokeStyle = "green";
+		ctx.fillStyle = "green";
+		ctx.fillRect(-2,7,4,-23-20*minuta/59);
+		//ctx.fillRect(-2,7,4,-43);
+		ctx.beginPath();
+		ctx.arc(0,-40,3,0,Math.PI*2);
+		ctx.fill();
+		ctx.rotate(-kat_minuty);
+		// wsk. sekundowa
+		ctx.rotate(kat_sekunda);
+		ctx.strokeStyle = "red";
+		ctx.fillStyle = "red";
+		ctx.fillRect(-1,9*sekunda/59,2,-50*(sekunda%15)/15);
+		//ctx.fillRect(-1,9*sekunda/59,2,-50*sekunda/59);
+		//ctx.fillRect(-1,9,2,-50);
+		ctx.beginPath();
+		ctx.arc(0,-44,2,0,Math.PI*2);
+		ctx.fill();
+		ctx.rotate(-kat_sekunda);
+		ctx.translate(-s_2,-w_2);
+	}
+	
+	function czas()
+	{
+		zegar();	
+		cyfrowy();
+		analogowy();
+		setTimeout(czas,1000);	
+	}
+	
+</script>
+</head>
+	
+	
+<body>
+	<div id="zegar"></div>
+	<div id="zegar1"></div>
+	
+	<table>
+		<tr>
+			<td>
+				<div id="godzina1">
+					<canvas width="20" height="30"></canvas>
+				</div>
+			</td>
+			<td>
+				<div id="godzina2">
+					<canvas width="20" height="30"></canvas>
+				</div>
+			</td>
+			<td>
+				<div id="kropki1">
+					<canvas width="7" height="30"></canvas>
+				</div>
+			</td>
+			<td>
+				<div id="minuta1">
+					<canvas width="20" height="30"></canvas>
+				</div>
+			</td>
+			<td>
+				<div id="minuta2">
+					<canvas width="20" height="30"></canvas>
+				</div>
+			</td>
+			<td>
+				<div id="kropki2">
+					<canvas width="7" height="30"></canvas>
+				</div>
+			</td>
+			<td>
+				<div id="sekunda1">
+					<canvas width="20" height="30"></canvas>
+				</div>
+			</td>
+			<td>
+				<div id="sekunda2">
+					<canvas width="20" height="30"></canvas>
+				</div>
+			</td>
+		</tr>
+	</table>
+	
+	<div id="analogowy">
+		<canvas width="100" height="100"></canvas>
+	</div>
+	
+	<script>
+		window.addEventListener("load",czas);
+	</script>
+
+</body>
+
+</html>
